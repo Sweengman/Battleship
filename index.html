@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>Document</title>
+    <link rel='preconnect' href='https://fonts.googleapis.com'>
+    <link rel='preconnect' href='https://fonts.googleapis.com'>
+    <link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>
+    <link href='https://fonts.googleapis.com/css2?family=Pirata+One&display=swap'
+     rel='stylesheet'>
+    <link href='main.css' rel='stylesheet' type='text/css'>
+    <script defer src='main.js'></script>
+    <!--  <script defer src="script.js"></script> -->
+</head>
+
+<body>
+    <h1>BattleShip!</h1>
+    <h2>Your turn!</h2>
+<section class='main-game' id='game-board'>
+
+    <section id='pl-info'>
+        <p>player stats go here</p>
+    </section>
+
+    <section id='opponent-map'>
+    </section>
+
+    <section id='comp-info'>
+        <p>computer stats go here</p>
+    </section>
+
+    <section id='player-map'>
+    </section>
+</section>
+
+
+
+
+    <section class='main-game' id='cannon-type'>
+        <div id='basic'>singleshot</div>
+        <div id='line'>lineshot</div>
+        <div id='cross'>crossshot</div>
+        <div id='block'>spreadshot</div>
+    </section>
+    <button id='retry'>Play Again?</button>
+
+
+    <button class='choose-team' id='#pirate-button'>Pirates</button>
+    <button class='choose-team' id='navy-button'>Navy</button>
+
+    <section class='pirate' class='selector' id='pship-select'>
+        <div id='pirate-1'></div>
+        <div id='pirate-2'></div>
+        <div id='pirate-3'></div>
+        <div id='pirate-4'></div>
+        <div id='pirate-5'></div>
+    </section>
+
+    <section class='navy' class='selector' id='nship-select'>
+        <div id='navy-1'></div>
+        <div id='navy-2'></div>
+        <div id='navy-3'></div>
+        <div id='navy-4'></div>
+        <div id='navy-5'></div>
+        </section>
+</body>
+</html>

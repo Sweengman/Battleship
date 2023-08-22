@@ -1,0 +1,171 @@
+* {
+    font-family: 'Pirata One', cursive;
+    text-align: center;
+}
+
+h1 {
+    position: relative;
+    top: 5rem;
+    margin: auto;
+}
+
+h2 {
+position: relative;
+top: 38rem;
+margin: auto;
+}
+
+.main-game {
+    visibility: hidden
+}
+
+.choose-team {
+    visibility: visible;
+}
+
+.selector {
+    visibility: hidden;
+}
+
+.pirate {
+    visibility: hidden;
+}
+
+.navy {
+    visibility: hidden;
+}
+
+#affiliation {
+    position: absolute;
+}
+
+#pirates {
+    position: absolute;
+}
+
+#navy {
+    position: absolute;
+
+}
+
+#ship-select {
+    position: absolute;
+}
+
+#game-board {
+    height: 40rem;
+    width: 80rem;
+    position: center;
+    margin: auto;
+} 
+#opponent-map {
+    display: grid;
+    height: 30rem;
+    width: 30rem;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(10, 1fr);
+    grid-column-gap: 1px;
+    grid-row-gap: 1px;
+    visibility: visible;
+    justify-content: center;
+    align-items: center;
+    background-image: radial-gradient(circle, turquoise, teal, rgb(73, 73, 140));
+    border-image: radial-gradient(circle, turquoise, teal, rgb(73, 73, 140) ) 30;
+    border-radius: 5%;
+    border-width: 5rem;
+    border-style: solid;
+    display: inline-block;
+}
+
+#opponent-map>div {
+    border: 2px solid black;
+    background-color: gray;
+    margin: 0;
+    background-size: contain;
+    height: 2.5rem;
+    width: 2.5rem;
+    border-radius: 10%;
+    justify-self: center;
+    display: inline-block;
+    
+}
+
+#opponent-map>div:hover {
+    border-color:burlywood;
+}
+
+#player-map {
+    display: grid;
+    height: 30rem;
+    width: 30rem;
+    position: absolute;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(10, 1fr);
+    grid-column-gap: 1px;
+    grid-row-gap: 1px;
+    visibility: hidden;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    background-image: radial-gradient(circle, turquoise, teal, rgb(73, 73, 140));
+    border-image: radial-gradient(circle, turquoise, teal, rgb(73, 73, 140) ) 30;
+    border-radius: 5%;
+    border-width: 5rem;
+    border-style: solid;
+
+}
+
+#player-map>div {
+    border: 2px solid black;
+    background-color: gray;
+    margin: 0;
+    background-size: contain;
+    height: 2.5rem;
+    width: 2.5rem;
+    border-radius: 10%;
+    justify-self: center;
+    
+}
+
+#pl-info {
+    height: 40rem;
+    width: 15rem;
+    background-color: blanchedalmond;
+    display: inline-block;
+    position: relative;
+    vertical-align:top
+}
+
+#comp-info {
+    height: 40rem;
+    width: 15rem;
+    background-color: blanchedalmond;
+    display: inline-block;
+    position: relative;
+    vertical-align:top
+}
+
+#cannon-type {
+    height: 5rem;
+    width: 70rem;
+    background-color: gray;
+    clip-path: polygon(0 0, 100% 0, 81% 100%, 20% 100%);
+    margin: auto;
+}
+
+#cannon-type>div {
+    position: relative;
+    margin: auto 2rem;
+    background-color: aqua;
+    border: 3px solid black;
+    height: 4rem;
+    width: 4rem;
+    display: inline-block;
+}
+
+#cannon-type>div:hover {
+    border-color: goldenrod;
+}
+
+/* Photo by <a href="https://unsplash.com/@fischh?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Claire Fischer</a> on <a href="https://unsplash.com/photos/TbEf3aIybcs?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
+   */
