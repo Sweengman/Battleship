@@ -129,13 +129,12 @@ function selectShip(e) {
         if (shipSelect.assignedShip === e.target.id) {    
             shipSelect.shipO *= -1
             e.target.style.transform.rotate('90deg');
-            }
         } else {shipSelect = {
             assignedShip: e.target.id,
             shipO: 1
+        }}
         }
-        }
-    e.target.removeAttribute('id')
+
 }
 
 
@@ -204,9 +203,10 @@ function renderShips() {
     //makes player specific ships visible
     //renders ship visible on player's map after event listener
     if(!shooting){
-        let shipSection = document.querySelector(`.${currentAfil}`)
+        let shipSection = document.querySelector(`section.${currentAfil}`)
+        console.log(shipSection)
         shipSection.style.visibility = 'visible'
-    } else if (shooting) {/*check for shot divs*/}
+    } else if (shooting) {/*ships are invisible, check for shot divs*/}
 }
 function renderBoard (board, affil) {
     for (let i = 0; i > 10; i++) {
@@ -268,7 +268,7 @@ function shoot(e) { //e = event
 
                     }
                 } else if(shipSelect.shipO === -1) {
-                    if (shipLength + Number(corrdinateArray[1]) < 10 ) {
+                    if (shipLength + Number(coordinateArray[1]) < 10 ) {
                         for (let i = 0; i = shipLength; i++) {
                             board[coordinate1 + i][coordinate2] = shipSelect.assignedShip
                         }
