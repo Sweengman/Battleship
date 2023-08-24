@@ -3,6 +3,7 @@
     text-align: center;
 }
 
+
 h1 {
     position: relative;
     top: 5rem;
@@ -15,13 +16,9 @@ top: 38rem;
 margin: auto;
 }
 
-.main-game {
-    visibility: visible;
-}
+/* .main-game {
 
-.hidden {
-    visibility: hidden
-}
+} */
 
 .choose-team {
     visibility: visible;
@@ -31,23 +28,20 @@ margin: auto;
     visibility: hidden;
 }
 
-.pirate {
-    visibility: hidden; 
-}
+/* .pirate {
 
-.navy {
-    visibility: hidden;
-}
+} */
 
-.navy>div {
+/* .navy {
+
+} */
+
+.ship {
     background-color: lightgray;
     border: 1px solid black;
 }
 
-.pirate>div {
-    background-color: lightgray;
-    border: 1px solid black;
-}
+
 
 #navy-button {
     visibility: visible;
@@ -80,14 +74,10 @@ margin: auto;
     position: center;
     margin: auto;
 } 
-#opponent-map {
-    display: grid;
+
+#space {
     height: 30rem;
     width: 30rem;
-    grid-template-columns: repeat(10, 1fr);
-    grid-template-rows: repeat(10, 1fr);
-    grid-column-gap: 1px;
-    grid-row-gap: 1px;
     background-image: radial-gradient(circle, turquoise, teal, rgb(73, 73, 140));
     border-image: radial-gradient(circle, turquoise, teal, rgb(73, 73, 140) ) 30;
     border-radius: 5%;
@@ -95,6 +85,23 @@ margin: auto;
     border-style: solid;
     display: inline-block;
     visibility: visible;
+}
+#opponent-map {
+    display: grid;
+    height: 30rem;
+    width: 30rem;
+    position: absolute;
+    top: 13.5%;
+    left: 29%;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(10, 1fr);
+    grid-column-gap: 1px;
+    grid-row-gap: 1px;
+    visibility: hidden;
+    justify-content: center;
+    align-items: center;
+    margin: 3.8rem 5rem;
+    visibility: hidden;
 }
 
 #opponent-map>div {
@@ -118,6 +125,8 @@ margin: auto;
     height: 30rem;
     width: 30rem;
     position: absolute;
+    top: 13.5%;
+    left: 29%;
     grid-template-columns: repeat(10, 1fr);
     grid-template-rows: repeat(10, 1fr);
     grid-column-gap: 1px;
@@ -125,12 +134,7 @@ margin: auto;
     visibility: hidden;
     justify-content: center;
     align-items: center;
-    margin: auto;
-    background-image: radial-gradient(circle, turquoise, teal, rgb(73, 73, 140));
-    border-image: radial-gradient(circle, turquoise, teal, rgb(73, 73, 140) ) 30;
-    border-radius: 5%;
-    border-width: 5rem;
-    border-style: solid;
+    margin: 3.8rem 5rem;
     visibility: hidden;
 
 }
@@ -147,13 +151,17 @@ margin: auto;
     
 }
 
+#player-map>div:hover {
+    border-color:burlywood;
+}
+
 #pl-info {
     height: 40rem;
     width: 15rem;
     background-color: blanchedalmond;
     display: inline-block;
     position: relative;
-    vertical-align:top
+    vertical-align:top;
 }
 
 #comp-info {
@@ -162,7 +170,7 @@ margin: auto;
     background-color: blanchedalmond;
     display: inline-block;
     position: relative;
-    vertical-align:top
+    vertical-align:top;
 }
 
 #cannon-type {
@@ -230,49 +238,83 @@ margin: auto;
     background-color: black;
  /* background-image: wreckage.jpg; */
 }
-#0 {
+
+.\0 {
     visibility: visible;
 }
 
-#pirate-1 {
-    width: 2.5rem
-
-}
-
-#pirate-2 {
-    width: 5rem
-}
-
-#pirate-3 {
-    width: 7.5rem;
-}
-
-#pirate-4 {
-    width: 10rem
-}
-
-#pirate-5 {
-    width: 12.5rem
-}
-
-#navy-1 {
+.-pirate-1 {
     width: 2.5rem;
+    margin-top: 2.5rem;
+    height: 2.5rem;
 }
 
-#navy-2 {
+.-pirate-2 {
     width: 5rem;
+    margin-top: 2.5rem;
+    height: 2.5rem;
 }
 
-#navy-3 {
+.-pirate-3 {
     width: 7.5rem;
+    margin-top: 2.5rem;
+    height: 2.5rem;
 }
 
-#navy-4 {
+.-pirate-4 {
     width: 10rem;
+    margin-top: 2.5rem;
+    height: 2.5rem;
 }
 
-#navy-5 {
+.-pirate-5 {
     width: 12.5rem;
+    margin-top: 2.5rem;
+    height: 2.5rem;
+}
+
+.-navy-1 {
+    width: 2.5rem;
+    margin-top: 2.5rem;
+    height: 2.5rem;
+}
+
+.-navy-2 {
+    width: 5rem;
+    margin-top: 2.5rem;
+    height: 2.5rem;
+}
+
+.-navy-3 {
+    width: 7.5rem;
+    margin-top: 2.5rem;
+    height: 2.5rem;
+}
+
+.-navy-4 {
+    width: 10rem;
+    margin-top: 2.5rem;
+    height: 2.5rem;
+}
+
+.-navy-5 {
+    width: 12.5rem;
+    margin-top: 2.5rem;
+    height: 2.5rem;
+}
+
+#mouse {
+    visibility: hidden;
+}
+
+.er-highlighted{
+    background-color: orange !important;
+}
+
+.highlighted{
+    background-color: green !important;
 }
 /* Photo by <a href="https://unsplash.com/@fischh?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Claire Fischer</a> on <a href="https://unsplash.com/photos/TbEf3aIybcs?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
    */
+
+   

@@ -11,10 +11,12 @@
      rel='stylesheet'>
     <link href='main.css' rel='stylesheet' type='text/css'>
     <script defer src='main.js'></script>
-    <!--  <script defer src="script.js"></script> -->
+    <!--  <script defer src='script.js'></script> -->
 </head>
 
 <body>
+<span class='ship' id='mouse'></span>
+
     <h1>BattleShip!</h1>
     <h2>Your turn!</h2>
 <section class='main-game' id='game-board'>
@@ -23,6 +25,7 @@
         <p>player stats go here</p>
     </section>
 
+    <section id='space'></section>
     <section id='opponent-map'>
 
     </section>
@@ -48,23 +51,23 @@
     <button id='retry'>Play Again?</button>
 
 
-    <button class="pirate" class='choose-team' id='pirate-button'>Pirates</button>
-    <button class="navy" class='choose-team' id='navy-button'>Navy</button>
+    <button class='pirate' class='choose-team' id='pirate-button'>Pirates</button>
+    <button class='navy' class='choose-team' id='navy-button'>Navy</button>
 
-    <section class='pirate' class='selector' id='pship-select'>
-        <div class='ship' id='pirate-1'></div>
-        <div class='ship' id='pirate-2'></div>
-        <div class='ship' id='pirate-3'></div>
-        <div class='ship' id='pirate-4'></div>
-        <div class='ship' id='pirate-5'></div>
+    <section class='pirate selector' id='pship-select'>
+        <div class='ship -pirate-1' ></div>
+        <div class='ship -pirate-2'></div>
+        <div class='ship -pirate-3'></div>
+        <div class='ship -pirate-4'></div>
+        <div class='ship -pirate-5'></div>
     </section>
 
-    <section class='navy' class='selector' id='nship-select'>
-        <div class='ship' id='navy-1'></div>
-        <div class='ship' id='navy-2'></div>
-        <div class='ship' id='navy-3'></div>
-        <div class='ship' id='navy-4'></div>
-        <div class='ship' id='navy-5'></div>
-        </section>
+    <section class='navy selector' id='nship-select'>
+        <div class='ship -navy-1'></div>
+        <div class='ship -navy-2'></div>
+        <div class='ship -navy-3'></div>
+        <div class='ship -navy-4'></div>
+        <div class='ship -navy-5'></div>
+    </section>
 </body>
 </html>

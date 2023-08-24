@@ -21,9 +21,13 @@ let p2Affil
 let player
 let player2
 let shipSelect = {
-    assignedShip: null,
-    shipO: 1
+    assignedShip: null, // format will be affiliation-length e.g. pirate-1, navy-4
+    shipO: 1 // 1 is horizontal to the right, -1 is vertical down
 }
+let shipSelectShipArray
+let shipSelectLength
+let shipSelectAffil
+let shipSelectId
 let shipsPlaced = 0
 
 // Cached Dom Elements
@@ -122,21 +126,140 @@ opponentBoardEl.addEventListener('click', shoot)
 playerBoardEl.addEventListener('click', shoot)
 pshipEls.addEventListener('click', selectShip)
 nshipEls.addEventListener('click', selectShip)
+opponentBoardEl.addEventListener('mouseover', highlightAffectedArea)
+playerBoardEl.addEventListener('mouseover', highlightAffectedArea)
+opponentBoardEl.addEventListener('mouseout', wipeHighlight)
+playerBoardEl.addEventListener('mouseout', wipeHighlight)
+
+//event listener functions
+function shoot(e) { //e = event
+    if (shooting) {
+        render()
+    } else if (!shooting) {
+        if (e.target.matches('div')){
+        if (e.target.parentNode.className === currentAfil) {//dont forget! board grid div ids will give coordinates for javascript board arrays
+            if (shipSelect.assignedShip) {//ship-selector div ids will indicate the exact ship (in theory. at very least it has the length of the ship )
+                let coordinateArray = e.target.id.split('-')
+                let coordinate1 = Number(coordinateArray[1])
+                let coordinate2 = Number(coordinateArray[2])
+                let board = (turn === 1 ? pBoard : p2Board)
+                if (board[coordinate1][coordinate2] === 0) {
+                    if (shipSelect.shipO === 1) {
+                        if (shipSelectLength + coordinate2 < 10 ) {
+                            let errorTest = null
+                            for (let i = 0; i < shipSelectLength; i++) {
+                                let currentEl = document.getElementById
+                                (`${currentAfil}-${coordinate1}-${coordinate2 + i}`)
+                            }
+
+                            for (let i = 0; i < shipSelectLength; i++) {
+                                let currentEl = document.getElementById
+                                (`${currentAfil}-${coordinate1}-${coordinate2 + i}`)
+                                currentEl.style.backgroundColor = 'yellow'
+                                board[coordinate1][coordinate2 + i] = shipSelect.assignedShip
+                                currentEl.classList.add(`'ship','-${shipSelectShipArray[1]}-${shipSelectShipArray[2]}'`)
+                            }
+
+                        }
+                    } else if(shipSelect.shipO === -1) {
+                        if (shipSelectLength + coordinate1 < 10 ) {
+                            for (let i = 0; i < shipSelectLength; i++) {
+                                let currentEl = document.getElementById
+                                (`${currentAfil}-${coordinate1 + i}-${coordinate2}`)
+                                currentEl.style.backgroundColor = 'yellow'
+                                board[coordinate1 + i][coordinate2] = shipSelect.assignedShip
+                                currentEl.classList.add(`'ship','-${shipSelectShipArray[1]}-${shipSelectShipArray[2]}'`)
+                            }
+                        }
+                    }
+                    if (currentAfil === 'pirate') { 
+                        delEl = document.querySelector(`section#pship-select>div${shipSelectId}`)
+                        delEl.remove()
+                    } else if (currentAfil === 'navy') {
+                        delEl = document.querySelector(`section#nship-select>div${shipSelectId}`)
+                        delEl.remove()
+                    }
+                    
+
+
+                    shipsPlaced ++
+                    shipSelect.assignedShip = null
+                    turn *= -1
+                    render()
+                }
+            }
+        }
+        }
+    }
+} 
 
 function selectShip(e) {
     if (shooting === true) return
-    else if(e.target.parentNode.id = currentAfil) {
-        if (shipSelect.assignedShip === e.target.id) {    
+    else if(e.target.parentNode.className === `${currentAfil} selector`) {
+        if (shipSelect.assignedShip === e.target.className) {    
             shipSelect.shipO *= -1
-            e.target.style.transform.rotate('90deg');
+            // e.target.style.transform.rotate('90deg');
         } else {shipSelect = {
-            assignedShip: e.target.id,
+            assignedShip: e.target.className,
             shipO: 1
-        }}
+            }
         }
+        if (shipSelect.assignedShip) {
+            shipSelectShipArray = shipSelect.assignedShip.split('-')
+            shipSelectLength = Number(shipSelectShipArray[2])
+            shipSelectAffil = shipSelectShipArray[1]
+            shipSelectId = `.ship.-${shipSelectAffil}-${shipSelectLength}`
+        }
+        render()
+    }
 
 }
 
+function highlightAffectedArea(e) {
+    if (e.target.matches('div')) {
+    if (shooting) {
+        // highlight area based on current selected cannon-fodder-type
+    } else if ((!shooting) && shipSelect.assignedShip) {
+        let coordinates = (e.target.id).split('-')
+        let coordinate1 = Number(coordinates[1])
+        let coordinate2 = Number(coordinates[2])        
+        if (shipSelect.shipO === 1) {
+            for (let i = 0; i < shipSelectLength; i++) {
+                let el = document.querySelector(`#${coordinates[0]}-${coordinate1}-${coordinate2 + i}`)
+                if (el) {
+                    if ((coordinate2 + shipSelectLength) <= 10) {el.setAttribute('class', 'highlighted')}
+                    else {el.setAttribute('class', 'er-highlighted')}
+                }
+            } 
+        } else if (shipSelect.shipO === -1) {
+            for (let i = 0; i < shipSelectLength; i++) {
+                let el = document.querySelector
+                (`#${coordinates[0]}-${coordinate1 + i}-${coordinate2}`)
+                if (el) {
+                if (coordinate1 + shipSelectLength <= 10) { el.setAttribute('class', 'highlighted')}
+                else {el.setAttribute('class', 'er-highlighted')}
+                }
+            }
+        }
+    }
+    }
+}
+
+function wipeHighlight(e) {
+    if (e.target.matches('div')) {
+        let wipeArray1 = [...document.querySelectorAll('#player-map>div')]
+        let wipeArray2 = [...document.querySelectorAll('#opponent-map>div')]
+
+        for(let div of wipeArray1) {
+        div.classList.remove('highlighted')
+        div.classList.remove('er-highlighted')
+        }
+        for(let div of wipeArray2) {
+        div.classList.remove('highlighted')
+        div.classList.remove('er-highlighted')
+        }
+    }
+}
 
 
 
@@ -162,7 +285,8 @@ function initialize(e) {
         '1': pAffill, 
         '-1': p2Affil
     }
-    currentAfil = turnAfil[turn.toString()]
+    playerBoardEl.classList.add(pAffill)
+    opponentBoardEl.classList.add(p2Affil)
     console.log(currentAfil)
     createBoard(pBoard, playerBoardEl, pAffill)
     createBoard(p2Board, opponentBoardEl, p2Affil) 
@@ -179,17 +303,22 @@ function createBoard(boardArray, whosBoard, affil) {
             boardArray[num1].push(0) 
             let num2 = i
             el = document.createElement('div')
-            whosBoard.appendChild(el).setAttribute('id', `${affil}-${num1}-${num2}`)
-            //whosBoard.classList.add(affil)
+            let boundEl = whosBoard.appendChild(el)
+            boundEl.setAttribute('id', `${affil}-${num1}-${num2}`)
+            boundEl.setAttribute('class', 'null')
+            
+            whosBoard.classList.add(affil)
 
         }
     }
 }
 
 function render() {
-    if (shipsPlaced >= 10) {
+    currentAfil = turnAfil[turn.toString()]
+    if (shipsPlaced > 9) {
         shooting = true
     }
+    renderTurn()
     //renderMessage()
     renderShips()
     //renderStats()
@@ -198,15 +327,50 @@ function render() {
     renderBoard(p2Board, p2Affil)
 }
 
+function renderTurn() {
+    let turn1Els = [...document.querySelectorAll(`.${pAffill}`)]
+    let turn2Els = [...document.querySelectorAll(`.${p2Affil}`)]
+    length1 = turn1Els.length
+    length2 = turn2Els.length
+    if (shooting) {
+        pshipEls.remove()
+        nshipEls.remove()
+    }
+    if (turn === 1) {
+        for (let i = 0; i < length1; i++) {
+            turn1Els[i].style.visibility = 'visible'
+        }
+        for (let i = 0; i < length2; i++) {
+            turn2Els[i].style.visibility = 'hidden'
+        }
+    } else if (turn === -1) {
+        for (let i = 0; i < length2; i++) {
+            turn2Els[i].style.visibility = 'visible'
+        }
+        for (let i = 0; i < length1; i++) {
+            turn1Els[i].style.visibility = 'hidden'
+        }
+    }
+}
 function renderShips() {
     //makes sure it is needed (eval with shooting var)
     //makes player specific ships visible
     //renders ship visible on player's map after event listener
     if(!shooting){
-        let shipSection = document.querySelector(`section.${currentAfil}`)
-        console.log(shipSection)
-        shipSection.style.visibility = 'visible'
-    } else if (shooting) {/*ships are invisible, check for shot divs*/}
+        if (shipSelect.assignedShip) {
+            pshipEls.querySelector(shipSelectId) ? 
+                pshipEls.querySelector(shipSelectId).style.borderColor = 'yellow'
+                : nshipEls.querySelector(shipSelectId).style.borderColor = 'yellow'
+        
+        } else {
+            let els = document.querySelectorAll(`section.selector>div`)
+            for (let el of els) {
+                el.style.borderColor = 'black'
+            }
+        }
+    } else if (shooting) {
+        /*ships are invisible, check for shot divs*/
+    }
 }
 function renderBoard (board, affil) {
     for (let i = 0; i > 10; i++) {
@@ -245,43 +409,7 @@ function renderBoard (board, affil) {
 
 // if shooting phase has begun, shoots div. 
 //if not, gets shipSelect assignedShip (affil and length) and adds it to board array based on shipSelect.shipO (orientation)
-function shoot(e) { //e = event
-    if (shooting) {
-        render()
-    } else if (!shooting) {
-        if (e.target.parentNode.id === currentAfil) {//dont forget! board grid div ids will give coordinates for javascript board arrays
-            if (shipSelect.assignedShip === true) {//ship-selector div ids will indicate the exact ship (in theory. at very least it has the length of the ship )
-                let coordinateArray = e.target.id.split('-')
-                let coordinate1 = Number(coordinateArray[1])
-                let coordinate2 = Number(coordinateArray[2])
-                let shipLength = Number(shipSelect.assignedShip.split('-')[1])
-                let board = function() {turn = 1 ? pBoard : p2Board}
-                if (board[coordinate1][coordinate2] === 0) {
-                if (shipSelect.shipO === 1) {
-                    if (shipLength + coordinate2 < 10 ) {
-                        board[coordinate1].splice(coordinate2, shipLength, shipSelect.assignedShip)
-                        for(let i = 0; i< shipLength; i++) {
-                           let currentEl = document.getElementById
-                           (`${turnAfil[true.toString()]}-${coordinate1}-${coordinate2 + i}`)
-                           currentEl.style.backgroundColor = 'yellow'
-                        }
 
-                    }
-                } else if(shipSelect.shipO === -1) {
-                    if (shipLength + Number(coordinateArray[1]) < 10 ) {
-                        for (let i = 0; i = shipLength; i++) {
-                            board[coordinate1 + i][coordinate2] = shipSelect.assignedShip
-                        }
-                    }
-                    }
-                    shipsPlaced ++
-                }
-            }
-        }
-    render()
-    turn *= -1
-    } 
-}
 
 function checkForShip(el) {
 
