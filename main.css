@@ -247,7 +247,7 @@ section.navy>.ship {
     margin-top: 2.5rem;
     height: 2.5rem;
 }
-.shoot-ship {
+/* .shoot-ship {
     background-color: gray;
 }
 
@@ -258,8 +258,8 @@ section.navy>.ship {
 
 .sunk-ship {
     visibility: visible !important;
-    background-color: black !important;
-}
+    background-color: black !important; */
+/* } */
 
 .hit {
     background-color: red;
