@@ -35,12 +35,17 @@ let shotSelect = {
     shotsLeft: null
 }
 let currentBoard
+let hiddenBoard
+let currentDomBoard
+let hiddenDomBoard
+let selectorError = false
+let turnSwitch = -1
 
 // Cached Dom Elements
 const opponentBoardEl = document.querySelector('#opponent-map')
 const playerBoardEl = document.querySelector('#player-map')
-const opponentSelectorEls = [...document.querySelectorAll('#opponent-map > div')]
-const playerSelectorEls = [...document.querySelectorAll('#player-map > div')]
+const opponentSelectorEls = [...document.querySelectorAll('#opponent-map > div.ship')]
+const playerSelectorEls = [...document.querySelectorAll('#player-map > div.ship')]
 const messageEl =document.querySelector('h2')
 const playerInfoEl = document.querySelector('#pl-info')
 const player2InfoEl = document.querySelector('#comp-info')
@@ -56,8 +61,8 @@ const pshipEls = document.querySelector('#pship-select')
 const nshipEls = document.querySelector('#nship-select')
 const retryButtonEl = document.querySelector('#retry')
 
-console.log(pirateButtonEl)
-console.log(navyButtonEl)
+// console.log(pirateButtonEl)
+// console.log(navyButtonEl)
 
 // ## classes
 
@@ -120,7 +125,6 @@ class Player {
 }
 
 
-console.log(opponentSelectorEls)
 // Event Listeners
 
 //               choose affiliation
@@ -140,111 +144,46 @@ cannonshotEl.addEventListener('click', selectShot)
 
 //event listener functions
 function select(e) { //e = event
-    if (e.target.matches('div')){
-        if (shooting) {
-            shoot(e)
-            turn *= -1
-            render()
-        } else if (!shooting) {
-        
-        if (e.target.parentNode.className === currentAfil) {//dont forget! board grid div ids will give coordinates for javascript board arrays
-            if (shipSelect.assignedShip) {//ship-selector div ids will indicate the exact ship (in theory. at very least it has the length of the ship )
-                let coordinateArray = e.target.id.split('-')
-                let coordinate1 = Number(coordinateArray[1])
-                let coordinate2 = Number(coordinateArray[2])
-                let board = (turn === 1 ? pBoard : p2Board)
-                if (!board[coordinate1][coordinate2].includes('ship')) {
-                    if (shipSelect.shipO === 1) {
-                        if (shipSelectLength + coordinate2 <= 10 ) {
-                            let errorTest = false
-                            for (let i = 0; i < shipSelectLength; i++) {
-                                let currentEl = document.getElementById
-                                (`${currentAfil}-${coordinate1}-${coordinate2 + i}`)
-                                if (currentEl.classList.contains('ship')) {
-                                    errorTest = true
-                                }
-                            }
-                            if (!errorTest) {
-                                for (let i = 0; i < shipSelectLength; i++) {
-                                    let currentEl = document.getElementById
-                                    (`${currentAfil}-${coordinate1}-${coordinate2 + i}`)
-                                    currentEl.style.backgroundColor = 'yellow'
-                                    board[coordinate1][coordinate2 + i] = shipSelect.assignedShip
-                                    currentEl.classList.add('ship',`-${shipSelectShipArray[1]}-${shipSelectShipArray[2]}`)
+    if (e.target.parentNode.className === currentAfil) {
+        if (e.target.matches('div')){
+            if (shooting) {
+                shoot(e)
 
-                                }
-                                if (currentAfil === 'pirate') { 
-                                    delEl = document.querySelector(`section#pship-select>div${shipSelectId}`)
-                                    delEl.remove()
-                                } else if (currentAfil === 'navy') {
-                                    delEl = document.querySelector(`section#nship-select>div${shipSelectId}`)
-                                    delEl.remove()
-                                }
-                                shipsPlaced ++
-                                shipSelect.assignedShip = null
-                                turn *= -1
-                                render()
-                            }
-                        }
-                    } else if(shipSelect.shipO === -1) {
-                        if (shipSelectLength + coordinate1 <= 10 ) {
-                            let errorTest = false
-                            for (let i = 0; i < shipSelectLength; i++) {
-                                let currentEl = document.getElementById
-                                (`${currentAfil}-${coordinate1 + i}-${coordinate2}`)
-                                if (currentEl.classList.contains('ship')) {
-                                    errorTest = true
-                                }
-                            }
-                            if (!errorTest) {
-                                for (let i = 0; i < shipSelectLength; i++) {
-                                    let currentEl = document.getElementById
-                                    (`${currentAfil}-${coordinate1 + i}-${coordinate2}`)
-                                    currentEl.style.backgroundColor = 'yellow'
-                                    board[coordinate1 + i][coordinate2] = shipSelect.assignedShip
-                                    currentEl.classList.add('ship',`-${shipSelectShipArray[1]}-${shipSelectShipArray[2]}`)
-                                }
-                                if (currentAfil === 'pirate') { 
-                                    delEl = document.querySelector(`section#pship-select>div${shipSelectId}`)
-                                    delEl.remove()
-                                } else if (currentAfil === 'navy') {
-                                    delEl = document.querySelector(`section#nship-select>div${shipSelectId}`)
-                                    delEl.remove()
-                                }
-                                shipsPlaced ++
-                                shipSelect.assignedShip = null
-                                turn *= -1
-                                render()
-                            }
-                        }
-                    }
+            } else if (!shooting && shipSelect.assignedShip) {
+                chooseShipPlace(e)
+                if (!selectorError) {
+                    document.querySelector(`.${currentAfil}.selector>${shipSelectId}`).remove()
+                    shipsPlaced ++
+                    shipSelect.assignedShip = null
+                    shipSelect.shipO = 1
                 }
             }
+            if(!selectorError) {
+                wipeHighlight()
+                turn *= -1
+                render()
+            } else {selectorError = false}
+            
         }
     }
-    }
-} 
+}
 //subfunctions to select 
 function chooseShipPlace(e) {
     if (e.target.parentNode.className === currentAfil) {
         if (shipSelect.assignedShip) {
-            let coordinateArray = e.target.id.split('-')
-            let coordinate1 = Number(coordinateArray[1])
-            let coordinate2 = Number(coordinateArray[2])
-            let board = (turn === 1 ? pBoard : p2Board)
             if (shipSelect.shipO === 1) { 
-                moveCoordinates(e.target.id, 'ship', 0, (shipSelectlength + 1), 0, 0, 0, 0, false)
-                moveCoordinates(e.target.id, shipSelectType, (shipSelectlength + 1), 0, 0, 0, 0, false)
-            } else if (shipSelect.ship0 === -1) {
-                moveCoordinates(e.target.id, 'ship', 0, (shipSelectlength + 1), 0, 0, 0, 0, 0, false)
-                moveCoordinates(e.target.id, shipSelectType, (shipSelectlength + 1), 0, 0, 0, 0, 0, false)
+                moveCoordinates(e.target.id, 'ship', 0, (shipSelectLength), 0, 0, 0, 0, false)
+                moveCoordinates(e.target.id, shipSelectType,(shipSelectLength), 0, 0, 0, 0, 0,- false)
+            } else if (shipSelect.shipO === -1) {
+                moveCoordinates(e.target.id, 'ship', (shipSelectLength), 0,  0, 0, 0, 0, 0, false)
+                moveCoordinates(e.target.id, shipSelectType, (shipSelectLength), 0, 0, 0, 0, 0, false)
             }
-        }
+        }   
     }
 }
 function shoot(e) {
     if (shotSelect.shotType === 'singleShot') {
-        moveCoordinates(e.target.id, 'shot', 0, 0, 0, 0, 0, false)
+        moveCoordinates(e.target.id, 'shot', 1, 1, 0, 0, 0, false)
 
     } else if (shotSelect.shotType === 'lineShot') {
         moveCoordinates(e.target.id, 'shot', 2, 0, 2, 0, 0, false)
@@ -267,9 +206,12 @@ function moveCoordinates(elId, boardParam, upLengthNum, rightLengthNum, downLeng
     let coordinate2 = Number(splitId[2]) //x direction coordinate
     let upNRights = getCoordinates(coordinate1, coordinate2, rightLengthNum, upLengthNum)
     let downNLefts = getCoordinates(coordinate1, coordinate2, leftLengthNum, downLengthNum)
+    if (coordinate1 + upLengthNum > 10 || coordinate2 + rightLengthNum > 10 || coordinate1 + downLengthNum < 0  || coordinate2 + leftLengthNum < 0) {
+        moveError(coordinate1, coordinate2)
+    } else {
     makeMove(coordinate1, coordinate2, upNRights, overLength, boardParam, dynamic)
     makeMove(coordinate1, coordinate2, downNLefts, overLength, boardParam, dynamic)
-    
+    }
 }
 
 function getCoordinates(coordinate1, coordinate2, xLength, yLength) {
@@ -300,72 +242,70 @@ function getCoordinates(coordinate1, coordinate2, xLength, yLength) {
     return coordinates
 }
 
-function makeMove(coordinate1, coordinate2, doubleArray, overLength, methodFunc, methodParam, boardParam, dynamic) { //if dynamic = true then x = i creates a cross pattern
+function makeMove(coordinate1, coordinate2, doubleArray, overLength, boardParam, dynamic) { //if dynamic = true then x = i creates a cross pattern
+
                              //first array
     for(let i = 0; i < doubleArray[0].length; i++) {
-        let board
-        if (turn === 1) {
-            board = p2Board
-        } else if (turn === 2) {
-            board = pBoard
+        if (dynamic) {
+            overLength = 0
+            overLength += i
         }
+        if (
+            currentBoard.includes(currentBoard[doubleArray[0][i]]) && 
+            currentBoard[doubleArray[0][i]].includes(currentBoard[doubleArray[0][i]][coordinate2]) &&
+            currentBoard[doubleArray[0][i]].includes(currentBoard[doubleArray[0][i]][coordinate2 + overLength]) &&
+            currentBoard[doubleArray[0][i]].includes(currentBoard[doubleArray[0][i]][coordinate2 - overLength])
+            ) {
+            if (boardParam) {
+                if (!currentBoard[doubleArray[0][i]][coordinate2].includes(boardParam)) {
+                (currentBoard[doubleArray[0][i]][coordinate2]).push(boardParam)
+                } else {moveError(coordinate1, coordinate2)}
+
+                if (!(overLength === 0)) {
+                    if (!coordinate2 + overLength >= 0 && coordinate2 + overLength <=9 && !(currentBoard[doubleArray[0][i]][coordinate2]).includes(boardParam)) {
+                    (currentBoard[doubleArray[0][i]][coordinate2 + overLength]).push(boardParam)
+                    } else {moveError(coordinate1, coordinate2)} 
+                    if ((coordinate2 - overLength) >= 0 && coordinate2 - overLength <=9 && !(currentBoard[doubleArray[0][i]][coordinate2]).includes(boardParam)) {
+                    (currentBoard[doubleArray[0][i]][coordinate2 - overLength]).push(boardParam)
+                    } else {moveError(coordinate1, coordinate2)}
+                }
+            }
+        }
+    }
+            //second Array
+    for(let i = 0; i < doubleArray[1].length; i++) {
         if (dynamic === true) {
             overLength = i
         }
         if (
-            board.includes(board[doubleArray[0][i]]) && 
-            board[doubleArray[0][i]].includes(board[doubleArray[0][i]][coordinate2]) &&
-            board[doubleArray[0][i]].includes(board[doubleArray[0][i]][coordinate2 + overLength]) &&
-            board[doubleArray[0][i]].includes(board[doubleArray[0][i]][coordinate2 - overLength])
-            ) {
+            currentBoard.includes(currentBoard[i]) &&
+            currentBoard[i].includes(currentBoard[i][coordinate2]) && 
+            currentBoard[i].includes(currentBoard[i][coordinate2 + overLength]) &&
+            currentBoard[i].includes(currentBoard[i][coordinate2 - overLength]) &&
+            doubleArray[1][i] <= 9
+        ) {
             if (boardParam) {
-                board[doubleArray[0][i]][coordinate2].push(boardParam)
-                if (!coordinate2 + overLength === 0) {
-                board[doubleArray[0][i]][coordinate2 + overLength].push(boardParam)
+                if (!currentBoard[coordinate1][doubleArray[1][i]].includes(boardParam)) {
+                currentBoard[coordinate1][doubleArray[1][i]].push(boardParam)
+                } else {moveError(coordinate1, coordinate2)}
+                if (!(overLength ===0)) {
+                    if ((coordinate2 + overLength) <= 9 && !(currentBoard[coordinate1 + overLength][doubleArray[1][i]].includes(boardParam))) {
+                    currentBoard[coordinate1 + overLength][doubleArray[1][i]].push(boardParam)
+                    } else {moveError(coordinate1, coordinate2)}
+                    if ((coordinate2 - overLength) >= 0 && (coordinate2 - overLength) <= 9 && !currentBoard[coordinate1 - overLength][doubleArray[1][i]].includes(boardParam)) {
+                    currentBoard[coordinate1 - overLength][doubleArray[1][i]].push(boardParam)
+                    } else {moveError(coordinate1, coordinate2)}
                 }
-                if (!coordinate2 - overLength === 0) {
-                board[doubleArray[0][i]][coordinate2 - overLength].push(boardParam)
-                }
-            }
+            }  
         }
-    }  
-            //second Array
-        for(let i = 0; i < doubleArray[1].length; i++) {
-            let board
-            if (turn === 1) {
-                board = p2Board
-            } else if (turn === 2) {
-                board = pBoard
-            }
-            if (dynamic === true) {
-                overLength = i
-            }
-            if (
-                board.includes(board[i]) &&
-                board[i].includes(board[i][coordinate2]) && 
-                board[i].includes(board[i][coordinate2 + overLength]) &&
-                board[i].includes(board[i][coordinate2 - overLength]) 
-            ) {
-                let currentEl = currentBoard.querySelector(`#${currentAfil}-${coordinate1}-${doubleArray[1][i]}`)
-                let overElRight = currentBoard.querySelector(`#${currentAfil}-${coordinate1 + overLength}-${doubleArray[1][i]}`)
-                let overElLeft = currentBoard.querySelector(`#${currentAfil}-${coordinate1 - overLength}-${doubleArray[1][i]}`)
-                methodFunc(currentEl, methodParam)
-                methodFunc(overElRight, methodParam)
-                methodFunc(overElLeft, methodParam)
-                if (boardParam) {
-                    board[coordinate1][doubleArray[0][i]].push(boardParam)
-                    if (!coordinate2 + overLength === 0) {
-                    board[coordinate1 + overLength][doubleArray[0][i]].push(boardParam)
-                    }
-                    if (!coordinate2 - overLength === 0) {
-                    board[coordinate1 - overLength][doubleArray[0][i]].push(boardParam)
-                    }
-                }
-               
-                
-                
-            }
-            }
+    }
+}
+
+function moveError(coordinate1, coordinate2) {
+        currentDomBoard.querySelector(`#${currentAfil}-${coordinate1}-${coordinate2}`).classList.add('er-highlighted')
+        currentBoard[coordinate1][coordinate2].push('er-highlighted')
+        selectorError = true
+         console.log('error')
 }
 
 function selectShip(e) {
@@ -392,78 +332,53 @@ function selectShip(e) {
 }
 
 function highlightAffectedArea(e) {
-    if (e.target.matches('div')) {
-        if (shooting) {
-            if (shotSelect.shotType) {
-                if (shotSelect.shotType === 'singleShot') {
-                    moveCoordinates(e.target.id, classAddEval, 'highlighted', 'highlighted', 0, 0, 0, 0, 0, false)
-                } else if (shotSelect.shotType === 'lineShot') {
-                    moveCoordinates(e.target.id, classAddEval, 'highlighted', 'highlighted', 2, 0, 2, 0, 0, false)
-                } else if (shotSelect.shotType === 'crossShot') {
-                    moveCoordinates(e.target.id, classAddEval, 'highlighted', 'highlighted', 2, 2, 2, 2, 0, false)
-                } else if (shotSelect.shotType === 'spreadShot') {
-                    moveCoordinates(e.target.id, classAddEval, 'highlighted', 'highlighted', 3, 3, 3, 3, 0, true)
-                }
-            }
-        } else if ((!shooting) && shipSelect.assignedShip) {
-            let coordinates = (e.target.id).split('-')
-            let coordinate1 = Number(coordinates[1])
-            let coordinate2 = Number(coordinates[2])
-            let errorTest = false      
-            if (shipSelect.shipO === 1) {
-                if (shipSelectLength + coordinate2 <= 10) {
-                    for (let i = 0; i < shipSelectLength; i++) {
-                        let el = document.querySelector(`#${coordinates[0]}-${coordinate1}-${coordinate2 + i}`)
-                        if (el.classList.contains('ship')) {
-                            errorTest = true
-                        }
-                    }   
-                }
-                    for (let i = 0; i < shipSelectLength; i++) {
-                        let el = document.querySelector(`#${coordinates[0]}-${coordinate1}-${coordinate2 + i}`)
-                        if (el) {
-                            if (((coordinate2 + shipSelectLength) <= 10) && (!errorTest)) {el.classList.add('highlighted')}
-                            else {el.classList.add('er-highlighted')}
-                        }
-                    } 
-                } else if (shipSelect.shipO === -1) {
-                if (shipSelectLength + coordinate1 <= 10) {
-                    for (let i = 0; i < shipSelectLength; i++) {
-                        let el = document.querySelector(`#${coordinates[0]}-${coordinate1 + i}-${coordinate2}`)
-                        if (el.classList.contains('ship')) {
-                            errorTest = true
-                        }
+    if (e.target.parentNode.className === currentAfil) {
+        if (e.target.matches('div')) {
+            if (shooting) {
+                if (shotSelect.shotType) {
+                    if (shotSelect.shotType = 'singleShot') { 
+                        moveCoordinates(e.target.id, 'highlighted', 1, 0, 0, 0, 0, 0, false)
                     }
                 }
-                for (let i = 0; i < shipSelectLength; i++) {
-                    let el = document.querySelector
-                    (`#${coordinates[0]}-${coordinate1 + i}-${coordinate2}`)
-                    if (el) {
-                    if ((coordinate1 + shipSelectLength <= 10) && (!errorTest)) { el.classList.add('highlighted')}
-                    else {el.classList.add('er-highlighted')}
+            } else if (!shooting) {
+                if (shipSelect.assignedShip) {
+                    if (shipSelect.shipO === 1) { 
+                        moveCoordinates(e.target.id, 'highlighted', 0, shipSelectLength, 0, 0, 0, 0, false)
+                    } else if (shipSelect.shipO === -1) {
+                        moveCoordinates(e.target.id, 'highlighted', shipSelectLength, 0, 0, 0, 0, 0, false)
+                        
                     }
                 }
             }
-            }
+            selectorError = false
+            render()
         }
     }
-    
+    window.addEventListener('mouseout', wipeHighlight)
+}
 
-function wipeHighlight(e) {
-    if (e.target.matches('div')) {
-        let wipeArray1 = [...document.querySelectorAll('#player-map>div')]
-        let wipeArray2 = [...document.querySelectorAll('#opponent-map>div')]
-
-        for(let div of wipeArray1) {
-        div.classList.remove('highlighted')
-        div.classList.remove('er-highlighted')
-        }
-        for(let div of wipeArray2) {
-        div.classList.remove('highlighted')
-        div.classList.remove('er-highlighted')
+function wipeHighlight() {
+    for (let i = 0; i < 10; i++) {
+        let coordinate1 = i
+        for(let i = 0; i < 10; i++) {
+            let coordinate2 = i
+            let boardClasses = currentBoard[coordinate1][coordinate2]
+            currentDomBoard.querySelector('div').classList.remove('highlighted')
+            currentDomBoard.querySelector('div').classList.remove('er-highlighted')
+            for(let cl of boardClasses) {
+                let deathNum = boardClasses.indexOf('highlighted')
+                let deathNum2 = boardClasses.indexOf('er-highlighted')
+                if (deathNum > -1) {
+                    boardClasses.splice(deathNum, 1)
+                }
+                if (deathNum2 > -1) {
+                    boardClasses.splice(deathNum2, 1)
+                }
+            }
         }
     }
 }
+  
 
 function selectShot(e) {
     if (shooting) {
@@ -482,8 +397,8 @@ function selectShot(e) {
 
 // Functions
 function initialize(e) {
-    console.log('initialize!')
-    console.log(e.target.class)
+    // console.log('initialize!')
+    // console.log(e.target.class)
     pAffill = e.target.className
     if (pAffill === 'pirate') {
         p2Affil = 'navy'
@@ -504,7 +419,7 @@ function initialize(e) {
     }
     playerBoardEl.classList.add(pAffill)
     opponentBoardEl.classList.add(p2Affil)
-    console.log(currentAfil)
+    // console.log(currentAfil)
     createBoard(pBoard, playerBoardEl, pAffill)
     createBoard(p2Board, opponentBoardEl, p2Affil) 
     render()
@@ -516,28 +431,51 @@ function createBoard(boardArray, whosBoard, affil) {
     for(let i = 0; i < 10; i++) {
         let num1 = i
         boardArray.push([])
+        // console.log('lap')
         for(let i = 0; i < 10; i++) {
-            boardArray[num1].push([0]) 
+            boardArray[num1].push(['-']) 
             let num2 = i
             el = document.createElement('div')
             let boundEl = whosBoard.appendChild(el)
-            boundEl.setAttribute('id', `${affil}-${num1}-${num2}`)
-            boundEl.setAttribute('class', 'null')
-            
+            boundEl.setAttribute('id', `${affil}-${num1}-${num2}`)  
             whosBoard.classList.add(affil)
-
+            whosBoard.id
+            // console.log(boardArray[num1][num2])
         }
     }
 }
 
 function render() {
     currentAfil = turnAfil[turn.toString()]
-    let currentBoardObj = {
+    if (!shooting) {
+        let currentBoardObj = {
+            '1': pBoard,
+            '-1': p2Board
+        }
+
+        currentBoard = currentBoardObj[turn.toString()]
+        currentBoard = currentBoardObj[(-turn).toString()]
+    let currentDomBoardObj = {
         '1': playerBoardEl,
         '-1': opponentBoardEl
     }
-    currentBoard = currentBoardObj[turn.toString()]
 
+    currentDomBoard = currentDomBoardObj[turn.toString()]
+    hiddenDomBoard = currentDomBoardObj[(-turn).toString()]
+
+    } else if (shooting) {
+        let currentDomBoardObj = {
+            '1': opponentBoardEl,
+            '-1': playerBoardEl
+        }
+
+        currentDomBoard = currentDomBoardObj[turn.toString()]
+        let currentBoardObj = {
+            '1': p2Board,
+            '-1': pBoard
+        }
+        currentBoard = currentBoardObj[turn.toString()]
+    }
 
     if (shipsPlaced > 9) {
         shooting = true
@@ -546,7 +484,6 @@ function render() {
     //renderMessage()
     renderShips()
     //renderStats()
-    //renderShots()
     renderBoard(pBoard, pAffill, playerBoardEl)
     renderBoard(p2Board, p2Affil, opponentBoardEl)
 }
@@ -556,11 +493,14 @@ function renderTurn() {
     let turn2Els = [...document.querySelectorAll(`.${p2Affil}`)]
     length1 = turn1Els.length
     length2 = turn2Els.length
+    
     if (shooting) {
         pshipEls.remove()
         nshipEls.remove()
+        turn *= turnSwitch
+        turnSwitch = 1
     }
-    if (turn === 1) {
+ if (turn === 1) {
         for (let i = 0; i < length1; i++) {
             turn1Els[i].style.visibility = 'visible'
         }
@@ -597,24 +537,53 @@ function renderShips() {
     }
 }
 function renderBoard (board, affil, domBoard) {
+    if (shooting) {
+        for(let ship of [...currentDomBoard.querySelectorAll('div.ship')]) {
+            ship.classList.remove('ship')
+            ship.classList.add('shoot-ship')
+        }
+        for(let ship of [...hiddenDomBoard.querySelectorAll('div.ship')]) {
+            ship.classList.remove('ship')
+            ship.classList.add('shoot-ship')
+        }
+        for(let i = 0; 1 < 10; i++) {
+            let num1 = i
+            for(let i = 0; 1 < 10; i++) {
+                let num2 = i
+                for(let soloClass of currentBoard[num1][num2]) {
+                    let deathNum = currentBoard[num1][num2].indexOf('ship')
+                    if(deathNum > -1) {
+                        currentBoard[num1][num2].indexOf('ship').splice(deathNum, 1)
+                    }
+                }
+                for(let soloClass of hiddenBoard[num1][num2]) {
+                    let deathNum = currentBoard[num1][num2].indexOf('ship')
+                    if(deathNum > -1) {
+                        currentBoard[num1][num2].indexOf('ship').splice(deathNum, 1)
+                    }
+                }
+            
+            }
+        }
+
+
+    }
     for (let i = 0; i < 10; i++) {
         let coordinate1 = i
         for(let i = 0; i < 10; i++) {
             let coordinate2 = i
             let boardEl = domBoard.querySelector(`#${affil}-${coordinate1}-${coordinate2}`)
-
-            for(let singleClass of board[coordinate1][coordinate2]) {
-                boardEl.classList.add(`${singleClass}`)
-            }
-            
+            let boardClasses = board[coordinate1][coordinate2]
+            boardClasses.join(' ')
+            boardEl.setAttribute('class',`${boardClasses.join(' ')}`)
         }
     }
 }
     //     colArr.forEach(function()) {
-    //     const divId = `c${colIdx}r${board[2]}`;
+    //     const divId = `c${colIdx}r${currentBoard[2]}`;
     //         // const cellEl = document.getElementById(divId);
-    //         // cellEl.style.backgroundColor = COLOR_LOOKUP[board[1]];
-    //     $(`#${divId}`).css('backgroundColor', COLOR_LOOKUP[board[1]])
+    //         // cellEl.style.backgroundColor = COLOR_LOOKUP[currentBoard[1]];
+    //     $(`#${divId}`).css('backgroundColor', COLOR_LOOKUP[currentBoard[1]])
     //     }})
     // }
 
@@ -640,14 +609,6 @@ function renderBoard (board, affil, domBoard) {
 
 function checkForShip(el) {
 
-}
-
-
-// my helper function arguments for my moveCoordinates function :D
-function classAddEval(el, classArg) {
-    if (el) {
-        el.classList.add(classArg)
-    }
 }
 
 

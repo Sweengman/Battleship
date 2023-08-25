@@ -37,7 +37,7 @@ margin: auto;
 } */
 
 .ship {
-    background-color: lightgray;
+    background-color: rgb(52, 23, 23);
     border: 1px solid black;
 }
 
@@ -155,6 +155,28 @@ margin: auto;
     border-color:burlywood;
 }
 
+#player-map>div.shoot-ship {
+    background-color: gray !important;
+}
+
+#player-map>div.hit-ship {
+    background-color: red !important;
+}
+
+#player-map>div.sunk-ship {
+    background-color: black !important;
+}
+
+
+
+section.pirate>.ship {
+    background-color: goldenrod !important;
+}
+
+section.navy>.ship {
+    background-color: darkslategray !important;
+}
+
 #pl-info {
     height: 40rem;
     width: 15rem;
@@ -224,6 +246,19 @@ margin: auto;
 .ship {
     margin-top: 2.5rem;
     height: 2.5rem;
+}
+.shoot-ship {
+    background-color: gray;
+}
+
+.hit-ship {
+    visibility: visible !important;
+    background-color: red !important;
+}
+
+.sunk-ship {
+    visibility: visible !important;
+    background-color: black !important;
 }
 
 .hit {
@@ -308,7 +343,7 @@ margin: auto;
 }
 
 .er-highlighted{
-    background-color: orange !important;
+    background-color: rgb(255, 77, 0) !important;
 }
 
 .highlighted{
