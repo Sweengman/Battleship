@@ -28,6 +28,7 @@ let shipSelectShipArray
 let shipSelectLength
 let shipSelectAffil
 let shipSelectId
+let shipSelectType
 let shipsPlaced = 0
 let shotSelect = {
     shotType: null,
@@ -139,12 +140,13 @@ cannonshotEl.addEventListener('click', selectShot)
 
 //event listener functions
 function select(e) { //e = event
-    if (shooting) {
-        shoot(e)
-        turn *= -1
-        render()
-    } else if (!shooting) {
-        if (e.target.matches('div')){
+    if (e.target.matches('div')){
+        if (shooting) {
+            shoot(e)
+            turn *= -1
+            render()
+        } else if (!shooting) {
+        
         if (e.target.parentNode.className === currentAfil) {//dont forget! board grid div ids will give coordinates for javascript board arrays
             if (shipSelect.assignedShip) {//ship-selector div ids will indicate the exact ship (in theory. at very least it has the length of the ship )
                 let coordinateArray = e.target.id.split('-')
@@ -219,117 +221,151 @@ function select(e) { //e = event
                 }
             }
         }
-        }
+    }
     }
 } 
-
-//shoot = subfunction to select
+//subfunctions to select 
+function chooseShipPlace(e) {
+    if (e.target.parentNode.className === currentAfil) {
+        if (shipSelect.assignedShip) {
+            let coordinateArray = e.target.id.split('-')
+            let coordinate1 = Number(coordinateArray[1])
+            let coordinate2 = Number(coordinateArray[2])
+            let board = (turn === 1 ? pBoard : p2Board)
+            if (shipSelect.shipO === 1) { 
+                moveCoordinates(e.target.id, 'ship', 0, (shipSelectlength + 1), 0, 0, 0, 0, false)
+                moveCoordinates(e.target.id, shipSelectType, (shipSelectlength + 1), 0, 0, 0, 0, false)
+            } else if (shipSelect.ship0 === -1) {
+                moveCoordinates(e.target.id, 'ship', 0, (shipSelectlength + 1), 0, 0, 0, 0, 0, false)
+                moveCoordinates(e.target.id, shipSelectType, (shipSelectlength + 1), 0, 0, 0, 0, 0, false)
+            }
+        }
+    }
+}
 function shoot(e) {
     if (shotSelect.shotType === 'singleShot') {
-        moveCoordinates(e.target.id, [classList.add], 'shot', 'shot', _, _, _, _, _, _)
+        moveCoordinates(e.target.id, 'shot', 0, 0, 0, 0, 0, false)
+
     } else if (shotSelect.shotType === 'lineShot') {
-        moveCoordinates(e.target.id, [classList.add], 'shot', 'shot', 2, 0, 0, 2, _, _)
+        moveCoordinates(e.target.id, 'shot', 2, 0, 2, 0, 0, false)
+
     } else if (shotSelect.shotType === 'crossShot') {
-        moveCoordinates(e.target.id, [classList.add], 'shot', 'shot', 2, 2, 2, 2, _, _)
+        moveCoordinates(e.target.id, 'shot', 2, 2, 2, 2, 0, false)
+
     } else if (shotSelect.shotType === 'spreadShot') {
-        moveCoordinates(e.target.id, [classList.add], 'shot', 'shot', 2, 2, 2, 2, 2, true)
+        moveCoordinates(e.target.id, 'shot', 3, 3, 3, 3, 0, true)
     }
 }
 
 
 //dynamic is true or false statement that makes overrides overLength and creates an X pattern
-function moveCoordinates(elId, methodArray, metArg, boardParam, upLengthNum, rightLengthNum, downLengthNum, leftLengthNum, overLength, dynamic) {
+function moveCoordinates(elId, boardParam, upLengthNum, rightLengthNum, downLengthNum, leftLengthNum, overLength, dynamic) {
     downLengthNum *= -1
     leftLengthNum *= -1
-    splitId = elId.split(' ')
-    idArray = splitID[1].split('-')
-    let upNRights = getCoordinates(elId, idArray, rightLengthNum, upLengthNum)
-    let downNLefts = getCoordinates(elId, idArray, leftLengthNum, downLengthNum)
-    for(let i = 0; i > methodArray.length; i++) {
-        makeMove(upNRights, overLength, methodArray[i], boardParam, metArg, dynamic)
-        makeMove(downNLefts, overLength, methodArray[i], boardParam, metArg, dynamic)
-    }
+    let splitId = elId.split('-')
+    let coordinate1 = Number(splitId[1]) //y direction coordinate
+    let coordinate2 = Number(splitId[2]) //x direction coordinate
+    let upNRights = getCoordinates(coordinate1, coordinate2, rightLengthNum, upLengthNum)
+    let downNLefts = getCoordinates(coordinate1, coordinate2, leftLengthNum, downLengthNum)
+    makeMove(coordinate1, coordinate2, upNRights, overLength, boardParam, dynamic)
+    makeMove(coordinate1, coordinate2, downNLefts, overLength, boardParam, dynamic)
+    
 }
 
-function getCoordinates(arrayToParse, xLength, yLength) {
-    let coordinate1 = Number(arrayToParse[1]) //y direction coordinate
-    let coordinate2 = Number(arrayToParse[2]) //x direction coordinate
+function getCoordinates(coordinate1, coordinate2, xLength, yLength) {
     let coordinates = []
     let yCoordinates = []
     let xCoordinates = []
-    for(let i = 0; i < yLength; i++) {
-        let yCoordinate = coordinate1 + i
-        yCoordinates.push(yCoordinate)
-    }
-    for(let i = 0; i < xLength; i++) {
-        let xCoordinate = coordinate2 + i
-        xCoordinates.push(xCoordinate)
+    if (xLength < 0 || yLength < 0) {
+        for(let i = 0; i > yLength; i--) {
+            let yCoordinate = coordinate1 + i
+            yCoordinates.push(yCoordinate)
+        }
+        for(let i = 0; i > xLength; i--) {
+            let xCoordinate = coordinate2 + i
+            xCoordinates.push(xCoordinate)
+        }
+    } else {
+        for(let i = 0; i < yLength; i++) {
+            let yCoordinate = coordinate1 + i
+            yCoordinates.push(yCoordinate)
+        }
+        for(let i = 0; i < xLength; i++) {
+            let xCoordinate = coordinate2 + i
+            xCoordinates.push(xCoordinate)
+        }
     }
     coordinates.push(yCoordinates)
     coordinates.push(xCoordinates)
     return coordinates
 }
 
-function makeMove(doubleArray, overLength, method, boardParam, metArg, dynamic) { //if dynamic = true then x = i creates a cross pattern
-    let x
-    if (dynamic === true) {
-        x = i 
-        overLength = 0
-    }
-    else {x = 0}
-
-                         //first array
-    for(let i = 0; 1 < doubleArray[0].length; i++) {
+function makeMove(coordinate1, coordinate2, doubleArray, overLength, methodFunc, methodParam, boardParam, dynamic) { //if dynamic = true then x = i creates a cross pattern
+                             //first array
+    for(let i = 0; i < doubleArray[0].length; i++) {
         let board
         if (turn === 1) {
             board = p2Board
         } else if (turn === 2) {
             board = pBoard
         }
+        if (dynamic === true) {
+            overLength = i
+        }
         if (
-            board[0].includes(board[0][i]) && 
-            board.includes(board[overLength * x]) &&
-            board[overLength * x].includes(board[overLength * x][i]) &&
-            board.includes(board[overLength * -x]) &&
-            board[overLength * -x].includes(board[overLength * -x][i])
+            board.includes(board[doubleArray[0][i]]) && 
+            board[doubleArray[0][i]].includes(board[doubleArray[0][i]][coordinate2]) &&
+            board[doubleArray[0][i]].includes(board[doubleArray[0][i]][coordinate2 + overLength]) &&
+            board[doubleArray[0][i]].includes(board[doubleArray[0][i]][coordinate2 - overLength])
             ) {
-            let currentEl = currentBoard.document.querySelector(`-${currentAfil}-${doubleArray[0][i]}`)
-            let overElRight = currentBoard.document.querySelector(`-${currentAfil}-${doubleArray[overLength * x][i]}`)
-            let overElLeft = currentBoard.document.querySelector(`-${currentAfil}-${doubleArray[overLength * -x][i]}`)
-            currentEl[method(metArg)]
-            overElRight[method(metArg)]
-            overElLeft[method(metArg)]
-            board[0][i].push(boardParam)
-            board[overLength * x][i].push(boardParam)
-            board[overLength * -x][1].push(boardParam)
+            if (boardParam) {
+                board[doubleArray[0][i]][coordinate2].push(boardParam)
+                if (!coordinate2 + overLength === 0) {
+                board[doubleArray[0][i]][coordinate2 + overLength].push(boardParam)
+                }
+                if (!coordinate2 - overLength === 0) {
+                board[doubleArray[0][i]][coordinate2 - overLength].push(boardParam)
+                }
+            }
         }
     }  
-
-        //second array
-    for(let i = 0; 1 < doubleArray[0].length; i++) {
-        let board
-        if (turn === 1) {
-            board = p2Board
-        } else if (turn === 2) {
-            board = pBoard
-        }
-        if (
-            board.includes(board[i]) &&
-            board[i].includes(board[i][0]) &&
-            board[i].includes(board[i][overLength * x]) &&
-            board[i].includes(board[i][overLength * -x])
+            //second Array
+        for(let i = 0; i < doubleArray[1].length; i++) {
+            let board
+            if (turn === 1) {
+                board = p2Board
+            } else if (turn === 2) {
+                board = pBoard
+            }
+            if (dynamic === true) {
+                overLength = i
+            }
+            if (
+                board.includes(board[i]) &&
+                board[i].includes(board[i][coordinate2]) && 
+                board[i].includes(board[i][coordinate2 + overLength]) &&
+                board[i].includes(board[i][coordinate2 - overLength]) 
             ) {
-            let currentEl = currentBoard.document.querySelector(`-${currentAfil}-${doubleArray[0][i]}`)
-            let overElRight = currentBoard.document.querySelector(`-${currentAfil}-${doubleArray[overLength * x][i]}`)
-            let overElLeft = currentBoard.document.querySelector(`-${currentAfil}-${doubleArray[overLength * -x][i]}`)
-            currentEl[method]
-            overElRight[method]
-            overElLeft[method]
-            board[0][i].push(boardParam)
-            board[overLength * x][i].push(boardParam)
-            board[overLength * -x][1].push(boardParam)
-        }
-    }
+                let currentEl = currentBoard.querySelector(`#${currentAfil}-${coordinate1}-${doubleArray[1][i]}`)
+                let overElRight = currentBoard.querySelector(`#${currentAfil}-${coordinate1 + overLength}-${doubleArray[1][i]}`)
+                let overElLeft = currentBoard.querySelector(`#${currentAfil}-${coordinate1 - overLength}-${doubleArray[1][i]}`)
+                methodFunc(currentEl, methodParam)
+                methodFunc(overElRight, methodParam)
+                methodFunc(overElLeft, methodParam)
+                if (boardParam) {
+                    board[coordinate1][doubleArray[0][i]].push(boardParam)
+                    if (!coordinate2 + overLength === 0) {
+                    board[coordinate1 + overLength][doubleArray[0][i]].push(boardParam)
+                    }
+                    if (!coordinate2 - overLength === 0) {
+                    board[coordinate1 - overLength][doubleArray[0][i]].push(boardParam)
+                    }
+                }
+               
+                
+                
+            }
+            }
 }
 
 function selectShip(e) {
@@ -348,6 +384,7 @@ function selectShip(e) {
             shipSelectLength = Number(shipSelectShipArray[2])
             shipSelectAffil = shipSelectShipArray[1]
             shipSelectId = `.ship.-${shipSelectAffil}-${shipSelectLength}`
+            shipSelectType = `-${shipSelectAffil}-${shipSelectLength}`
         }
         render()
     }
@@ -359,13 +396,13 @@ function highlightAffectedArea(e) {
         if (shooting) {
             if (shotSelect.shotType) {
                 if (shotSelect.shotType === 'singleShot') {
-                    moveCoordinates(e.target.id, [classList.add, 'highlighted', _, _, _, _, _, _, _])
+                    moveCoordinates(e.target.id, classAddEval, 'highlighted', 'highlighted', 0, 0, 0, 0, 0, false)
                 } else if (shotSelect.shotType === 'lineShot') {
-                    moveCoordinates(e.target.id, [classList.add], ('highlighted'), _, 2, 0, 0, 2, _, _)
+                    moveCoordinates(e.target.id, classAddEval, 'highlighted', 'highlighted', 2, 0, 2, 0, 0, false)
                 } else if (shotSelect.shotType === 'crossShot') {
-                    moveCoordinates(e.target.id, [classList.add], ('highlighted'), _, 2, 2, 2, 2, _, _)
+                    moveCoordinates(e.target.id, classAddEval, 'highlighted', 'highlighted', 2, 2, 2, 2, 0, false)
                 } else if (shotSelect.shotType === 'spreadShot') {
-                    moveCoordinates(e.target.id, [classList.add], ('highlighted'), _, 2, 2, 2, 2, 2, true)
+                    moveCoordinates(e.target.id, classAddEval, 'highlighted', 'highlighted', 3, 3, 3, 3, 0, true)
                 }
             }
         } else if ((!shooting) && shipSelect.assignedShip) {
@@ -510,8 +547,8 @@ function render() {
     renderShips()
     //renderStats()
     //renderShots()
-    renderBoard(pBoard, pAffill)
-    renderBoard(p2Board, p2Affil)
+    renderBoard(pBoard, pAffill, playerBoardEl)
+    renderBoard(p2Board, p2Affil, opponentBoardEl)
 }
 
 function renderTurn() {
@@ -559,14 +596,17 @@ function renderShips() {
         /*ships are invisible, check for shot divs*/
     }
 }
-function renderBoard (board, affil) {
-    for (let i = 0; i > 10; i++) {
-        for (let innerArr of board[i]){
-            if (innerArr !== 0) {
-            let idx2 = array.findIndex(innerArr)
-            let element = document.getElementById(`${affil}-${idx1}-${idx2}`)
-            element.setAttribute('id', `${board[idx1][idx2]}`)
+function renderBoard (board, affil, domBoard) {
+    for (let i = 0; i < 10; i++) {
+        let coordinate1 = i
+        for(let i = 0; i < 10; i++) {
+            let coordinate2 = i
+            let boardEl = domBoard.querySelector(`#${affil}-${coordinate1}-${coordinate2}`)
+
+            for(let singleClass of board[coordinate1][coordinate2]) {
+                boardEl.classList.add(`${singleClass}`)
             }
+            
         }
     }
 }
@@ -603,6 +643,12 @@ function checkForShip(el) {
 }
 
 
+// my helper function arguments for my moveCoordinates function :D
+function classAddEval(el, classArg) {
+    if (el) {
+        el.classList.add(classArg)
+    }
+}
 
 
 
