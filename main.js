@@ -562,11 +562,8 @@ function renderBoard (board, affil, domBoard) {
                         currentBoard[num1][num2].indexOf('ship').splice(deathNum, 1)
                     }
                 }
-            
             }
         }
-
-
     }
     for (let i = 0; i < 10; i++) {
         let coordinate1 = i
