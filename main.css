@@ -16,25 +16,30 @@ top: 38rem;
 margin: auto;
 }
 
-/* .main-game {
-
-} */
+button {
+    height: 4rem;
+    width: 6rem;
+}
 
 .choose-team {
     visibility: visible;
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#retry>button {
+    visibility: hidden;
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .selector {
     visibility: hidden;
 }
-
-/* .pirate {
-
-} */
-
-/* .navy {
-
-} */
 
 .ship {
     background-color: rgb(52, 23, 23);
@@ -155,8 +160,10 @@ margin: auto;
     border-color:burlywood;
 }
 
+
+
 #player-map>div.shoot-ship {
-    background-color: gray !important;
+    background-color: gray;
 }
 
 #player-map>div.hit-ship {
@@ -167,7 +174,25 @@ margin: auto;
     background-color: black !important;
 }
 
+#player-map>div.miss {
+    background-color: white !important;
+}
 
+#player-map>div.shoot-ship {
+    background-color: gray;
+}
+
+#opponent-map>div.hit-ship {
+    background-color: red !important;
+}
+
+#opponent-map>div.sunk-ship {
+    background-color: black !important;
+}
+
+#opponent-map>div.miss {
+    background-color: white !important;
+}
 
 section.pirate>.ship {
     background-color: goldenrod !important;
@@ -349,7 +374,6 @@ section.navy>.ship {
 .highlighted{
     background-color: green !important;
 }
-/* Photo by <a href="https://unsplash.com/@fischh?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Claire Fischer</a> on <a href="https://unsplash.com/photos/TbEf3aIybcs?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
-   */
+
 
    

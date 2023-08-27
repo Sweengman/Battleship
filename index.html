@@ -18,8 +18,16 @@
 <span class='ship' id='mouse'></span>
 
     <h1>BattleShip!</h1>
-    <h2>Your turn!</h2>
+    <h2>select pirate or navy to choose your team!</h2>
 <section class='main-game' id='game-board'>
+    <section class="choose-team">
+        <button class='pirate' class='choose-team' id='pirate-button'>Pirates</button>
+        <button class='navy' class='choose-team' id='navy-button'>Navy</button>
+    </section>
+
+    <section id="retry">
+        <button >Play Again?</button>
+    </section>
 
     <section id='pl-info'>
         <p>player stats go here</p>
@@ -48,11 +56,9 @@
         <div id='crossShot'>crossshot</div>
         <div id='spreadShot'>spreadshot</div>
     </section>
-    <button id='retry'>Play Again?</button>
+   
 
 
-    <button class='pirate' class='choose-team' id='pirate-button'>Pirates</button>
-    <button class='navy' class='choose-team' id='navy-button'>Navy</button>
 
     <section class='pirate selector' id='pship-select'>
         <div class='ship -pirate-1' ></div>

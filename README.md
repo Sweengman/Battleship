@@ -12,6 +12,7 @@ Getting Started
 
 To test it out for yourself click this link:
 [title](https://sweengman.github.io/Battleship/)
+![Alt text](image-1.png)
 
 Instructions:
 
