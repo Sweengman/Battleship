@@ -20,16 +20,11 @@ Instructions:
     - select simple rectangle ship renders from the side and place them on the grid with your mouse. 
     - click the currently selected side-ship to rotate your ship render. 
 
-## do to a bug, the current functionality of this project is minimal.
-
+## do to minor bugs, some of the unique 'shot-types' aren't working
 Next Steps
-- redo my moveCoordinate super-function.
-- reconnect my highlighter and shot functions. 
-- reconnect my playerobject ships to the grid ships
-- fix the win condition object code
-- connect that object code to the winner var!
+- add delay between rounds to confirm your selection
+- fix shot-types
+- update models
+- add sound
+- revamp css
 
-bonus!
-- reconnect my unique cannon-shot function to the super-function and the highlighter function
-- connect prepared music and simple ship images
-- have an ingame HUD saying who's turn it is and other fun stats
