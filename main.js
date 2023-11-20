@@ -562,10 +562,12 @@ function moveCoordinates(e, elId, boardParam, upLengthNum, rightLengthNum, downL
     let coordinate2 = Number(splitId[2]) //x direction coordinate
     let upNRights = getCoordinates(coordinate1, coordinate2, rightLengthNum, upLengthNum)
     let downNLefts = getCoordinates(coordinate1, coordinate2, leftLengthNum, downLengthNum)
+
+    // lengthNums affect coordinates one less than their number, thus the value they must be lessthan/greaterthan must be lesser or greater by 1 to account for the 'redundancy'
     if (coordinate1 + upLengthNum > 10 || 
         coordinate2 + rightLengthNum > 10 || 
-        coordinate1 + downLengthNum < 0  || 
-        coordinate2 + leftLengthNum < 0 ||
+        coordinate1 + downLengthNum < -1  || 
+        coordinate2 + leftLengthNum < -1 ||
         e.target.classList.contains(boardParam)) {
         moveError(coordinate1, coordinate2)
     } else {
@@ -617,11 +619,11 @@ function makeMove(coordinate1, coordinate2, doubleArray, overLength, boardParam,
             ) {
             if (boardParam) {
                 (currentBoard[doubleArray[0][i]][coordinate2]).push(boardParam)
-                if (!(overLength === 0)) {
-                    if (!coordinate2 + overLength >= 0 && coordinate2 + overLength <=9 && !(currentBoard[doubleArray[0][i]][coordinate2]).includes(boardParam)) {
+                if (overLength !== 0) {
+                    if (coordinate2 + overLength >= 0 && coordinate2 + overLength <=9 && !(currentBoard[doubleArray[0][i]][coordinate2 + overLength]).includes(boardParam) && !(currentBoard[doubleArray[0][i]][coordinate2 + overLength]).includes("shot")) {
                     (currentBoard[doubleArray[0][i]][coordinate2 + overLength]).push(boardParam)
                     } else {moveError(coordinate1, coordinate2)} 
-                    if ((coordinate2 - overLength) >= 0 && coordinate2 - overLength <=9 && !(currentBoard[doubleArray[0][i]][coordinate2]).includes(boardParam)) {
+                    if ((coordinate2 - overLength) >= 0 && coordinate2 - overLength <=9 && !(currentBoard[doubleArray[0][i]][coordinate2 - overLength]).includes(boardParam)) {
                     (currentBoard[doubleArray[0][i]][coordinate2 - overLength]).push(boardParam)
                     } else {moveError(coordinate1, coordinate2)}
                 }
@@ -641,15 +643,7 @@ function makeMove(coordinate1, coordinate2, doubleArray, overLength, boardParam,
             doubleArray[1][i] <= 9
         ) {
             if (boardParam) { 
-                    currentBoard[coordinate1][doubleArray[1][i]].push(boardParam)
-                if (!(overLength === 0)) {
-                    if ((coordinate2 + overLength) <= 9 && !(currentBoard[coordinate1 + overLength][doubleArray[1][i]].includes(boardParam))) {
-                    currentBoard[coordinate1 + overLength][doubleArray[1][i]].push(boardParam)
-                    } else {moveError(coordinate1, coordinate2)}
-                    if ((coordinate2 - overLength) >= 0 && (coordinate2 - overLength) <= 9 && !currentBoard[coordinate1 - overLength][doubleArray[1][i]].includes(boardParam)) {
-                    currentBoard[coordinate1 - overLength][doubleArray[1][i]].push(boardParam)
-                    } else {moveError(coordinate1, coordinate2)}
-                }
+                    currentBoard[coordinate1][doubleArray[1][i]].push(boardParam)   
             }  
         }
     }
