@@ -55,6 +55,7 @@ const pshipEls = document.querySelector('#pship-select')
 const nshipEls = document.querySelector('#nship-select')
 const retryButtonEl = document.querySelector('.retry>button')
 const gameBoardEl = document.querySelector('.main-game')
+const turnSignal = document.querySelector('.turnSignal')
 
 
 // ## classes
@@ -173,8 +174,7 @@ function select(e) { //e = event
                 shoot(e)
                 if(!selectorError) {
                     wipeHighlight()
-                    turn *= -1
-                    render()
+                    signalTurn()
                 } else {selectorError = false}
                 }
             } else if (!shooting && shipSelect.assignedShip) {
@@ -186,14 +186,19 @@ function select(e) { //e = event
                         shipSelect.assignedShip = null
                         shipSelect.shipO = 1
                         wipeHighlight()
-                        turn *= -1
-                        render()
+                        signalTurn()
                      } else {selectorError = false}
                 }
             }
         }
     }
 //subfunctions to select 
+async function signalTurn() {
+    setTimeout(() => {turn *= -1}, '1000')
+    render()
+    
+}
+
 function chooseShipPlace(e) {
     if (e.target.parentNode.className === currentDomBoard.className) {
         if (shipSelect.assignedShip) {
@@ -223,6 +228,8 @@ function shoot(e) {
     shotSelect.shotType = null
     shotSelect.shotsLeft = null
 }
+
+
 
 
 //dynamic is true or false statement that makes overrides overLength and creates an X pattern
@@ -620,7 +627,7 @@ function makeMove(coordinate1, coordinate2, doubleArray, overLength, boardParam,
             if (boardParam) {
                 (currentBoard[doubleArray[0][i]][coordinate2]).push(boardParam)
                 if (overLength !== 0) {
-                    if (coordinate2 + overLength >= 0 && coordinate2 + overLength <=9 && !(currentBoard[doubleArray[0][i]][coordinate2 + overLength]).includes(boardParam) && !(currentBoard[doubleArray[0][i]][coordinate2 + overLength]).includes("shot")) {
+                    if (coordinate2 + overLength >= 0 && coordinate2 + overLength <=9 && !(currentBoard[doubleArray[0][i]][coordinate2 + overLength]).includes(boardParam) && !(currentBoard[doubleArray[0][i]][coordinate2 + overLength]).includes('shot')) {
                     (currentBoard[doubleArray[0][i]][coordinate2 + overLength]).push(boardParam)
                     } else {moveError(coordinate1, coordinate2)} 
                     if ((coordinate2 - overLength) >= 0 && coordinate2 - overLength <=9 && !(currentBoard[doubleArray[0][i]][coordinate2 - overLength]).includes(boardParam)) {
